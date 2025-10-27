@@ -1,6 +1,6 @@
 # Student ID: 012698912 
 # File: main.py
-# Submission Date: 10/26/2025
+# Submission Date: 10/27/2025
 # WGUPS Routing Program (lists-only core; no Python dicts in storage/indexes)
 #
 # Rubric mapping:
@@ -133,7 +133,7 @@ class Package:
             self.status = "AT HUB (awaiting 10:20 address correction)"
             return
         if ("delayed on flight" in self.notes.lower()) and qtime < DELAYED_TIME:
-            self.status = "AT HUB (awaiting 09:05 availability)"
+            self.status = "DELAYED — will not arrive at the depot until 09:05 AM"
             return
 
         # Before depart: AT HUB
@@ -478,8 +478,9 @@ def run(sim_sanity=False):
                     failures.append(f"Pkg {p.ID} departed at {hms_any(p.departureTime)} before 09:05.")
                 nine = datetime.timedelta(hours=9)
                 p.statusUpdate(nine)
-                if "awaiting 09:05" not in p.status:
-                    failures.append(f"Pkg {p.ID} not labeled as awaiting 09:05 at 09:00.")
+                if not (p.status.startswith("DELAYED") and "09:05" in p.status):
+                    failures.append(f"Pkg {p.ID} not correctly labeled as delayed at 09:00.")
+
             if p.ID == 9:
                 if p.deliveryTime is not None and p.deliveryTime < ADDR_FIX_TIME:
                     failures.append(f"Pkg 9 delivered at {hms_any(p.deliveryTime)} before 10:20.")
